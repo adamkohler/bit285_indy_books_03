@@ -13,6 +13,7 @@ namespace IndyBooks.ViewModels
         public decimal Price { get; set; }
         [Display(Name = "Author Name")]
         public String Name { get; set; }
+        //public long bookId { get; set; }
 
         //Add properties to support a Writer's SelectList (Id and WritersList)
         public long AuthorId { get; set; }

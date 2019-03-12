@@ -29,7 +29,40 @@ namespace IndyBooks.Controllers
         {
             //TODO: Build the Author and the Book given the newBook data. Add to DbSets; SaveChanges
             Writer writer = new Writer();
-            try
+            Book book = _db.Books.SingleOrDefault(b => b.SKU == newBook.SKU);
+
+            //update method
+            if (book != null)
+            {
+                book.Author = writer;
+                book.Title = newBook.Title;
+                book.SKU = newBook.SKU;
+                book.Price = newBook.Price;
+
+                _db.Update(book);
+            }
+            //add new book to db
+            else //(book == null)
+            {
+                if (newBook.AuthorId != 0)
+                {
+                    writer = _db.Writers.Single(w => w.Id == newBook.AuthorId);
+                }
+                else //id == 0
+                {
+                    writer.Name = newBook.Name;
+                    _db.Writers.Add(writer);
+                }
+                Book booknew = new Book();
+                booknew.Author = writer;
+                booknew.Title = newBook.Title;
+                booknew.SKU = newBook.SKU;
+                booknew.Price = newBook.Price;
+
+                _db.Books.Add(booknew);
+            }
+
+            /*try
             {
                 var SKUtest = _db.Books.Single(b => b.SKU == newBook.SKU);
                 Book book = _db.Books.Single(b => b.SKU == newBook.SKU);
@@ -59,7 +92,9 @@ namespace IndyBooks.Controllers
                 booknew.Price = newBook.Price;
 
                 _db.Books.Add(booknew);
-            }
+            }*/
+
+
             _db.SaveChanges();
 
             //Shows the new book using the Search Listing 
@@ -100,7 +135,9 @@ namespace IndyBooks.Controllers
         public IActionResult DeleteBook(long id)
         {
             //TODO: Remove the Book associated with the given id number; Save Changes
-            var booktodelete = _db.Books.Single(btd => btd.Id == id);
+            //var booktodelete = _db.Books.Single(btd => btd.Id == id);
+
+            var booktodelete = new Book { Id = id }; //updated with this pro tip correction
             _db.Books.Remove(booktodelete);
             _db.SaveChanges();
 
